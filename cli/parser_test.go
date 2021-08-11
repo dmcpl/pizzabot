@@ -79,21 +79,31 @@ func TestParsePath(t *testing.T) {
 	assert.Equal(t, expected.Points[:len(expected.Points)-1], p.Points)
 }
 
-//5x5 (0, 0) (1, 3) (4, 4) (4, 2) (4, 2) (0, 1) (3, 2) (2, 3) (4, 1)
-
 func TestValidatePoints(t *testing.T) {
 	size := &grid.Size{5, 5}
-	path := grid.NewPath(&grid.Point{0,0},
-		&grid.Point{1,3},
-		&grid.Point{4,4},
-		&grid.Point{4,2},
-		&grid.Point{4,2},
-		&grid.Point{0,1},
-		&grid.Point{3,2},
-		&grid.Point{2,3},
-		&grid.Point{4,1})
+	path := grid.NewPath(&grid.Point{0, 0},
+		&grid.Point{1, 3},
+		&grid.Point{4, 4},
+		&grid.Point{4, 2},
+		&grid.Point{4, 2},
+		&grid.Point{0, 1},
+		&grid.Point{3, 2},
+		&grid.Point{2, 3},
+		&grid.Point{4, 1})
 
 	err := validatePoints(path, size)
-
 	assert.Nil(t, err)
+
+	path = grid.NewPath(&grid.Point{0, 0},
+		&grid.Point{1, 9},
+		&grid.Point{4, 4},
+		&grid.Point{10, 2},
+		&grid.Point{4, 2},
+		&grid.Point{0, 1},
+		&grid.Point{5, 2},
+		&grid.Point{2, 6},
+		&grid.Point{4, 1})
+
+	err = validatePoints(path, size)
+	assert.NotNil(t, err)
 }

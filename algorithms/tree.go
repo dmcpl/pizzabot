@@ -4,56 +4,75 @@ import (
 	"example.com/slice/pizzabot/grid"
 )
 
-func NodeTreeBruteForce(path *grid.Path) []*grid.Path {
-	//todo unimplemented
-	//origin := &grid.Point{0, 0}
-	return nil
+type PathFinderFunc func(point grid.Point, rest grid.Path) grid.Path
+
+// NodeTreeClosestPoint find the closest point pathfinding with branching at
+// points with equal distance.
+func NodeTreeClosestPoint(path grid.Path) []grid.Path {
+	return nodeTree(path, findClosestPoints)
 }
 
-func NodeTreeClosestPoint(path *grid.Path) []*grid.Path {
-	origin := &grid.Point{0, 0}
-	root := buildTree(origin, path)
+// NodeTreeBruteForce extract every single combination of routes, each point branches at
+// all other points available. Can get nuts quickly!
+// number of paths = (number of points - 1)! (factorial)
+func NodeTreeBruteForce(path grid.Path) []grid.Path {
+	return nodeTree(path, findAllPoints)
+}
 
-	acc := make([]*grid.Path, 0)
+// nodeTree build and traverse node tree and return all viable paths extracted
+func nodeTree(path grid.Path, pathfinderFn PathFinderFunc) []grid.Path {
+	origin := grid.Point{0, 0}
+	root := buildTree(origin, path, pathfinderFn)
+
+	acc := make([]grid.Path, 0)
 	traverseTree(root, nil, &acc)
-
 	return acc
 }
 
-type node struct {
-	Point    *grid.Point
-	Rest     *grid.Path
-	SubNodes []*node
+// Node represents a single point in a possibility of paths
+type Node struct {
+	Point    grid.Point
+	Rest     grid.Path
+	SubNodes []*Node
 }
 
-func newNode(point *grid.Point, rest *grid.Path) *node {
-	return &node{Point: point,
+func newNode(point grid.Point, rest grid.Path) *Node {
+	return &Node{Point: point,
 		Rest:     rest,
-		SubNodes: make([]*node, 0, 3)}
+		SubNodes: make([]*Node, 0, 3)}
 }
 
+// NodeList used for route tracing
 type NodeList struct {
-	Nodes []*node
+	Nodes []*Node
 }
 
-func buildTree(point *grid.Point, rest *grid.Path) *node {
+// buildTree build a node tree which contains a point the path left at this point
+// and have recursively stored sub-nodes with the same data. The sub-nodes are decided
+// by the pathfinder function used pathfinderFn and represent the next viable points in
+// the current path.
+func buildTree(point grid.Point, rest grid.Path, pathfinderFn PathFinderFunc) *Node {
 	node := newNode(point, rest)
 
 	if len(rest.Points) == 0 {
 		return node
 	}
 
-	c := findClosestPoints(point, rest)
+	c := pathfinderFn(point, rest)
 	for _, p := range c.Points {
-		node.SubNodes = append(node.SubNodes, buildTree(p, rest.Remove(p)))
+		newPath := grid.Remove(rest, p)
+		node.SubNodes = append(node.SubNodes, buildTree(p, newPath, pathfinderFn))
 	}
 
 	return node
 }
 
-func traverseTree(root *node, nodePath *NodeList, acc *[]*grid.Path) {
+// traverseTree moves through the tree using nodePath to record the current branch
+// once a leaf is encountered nodePath will write its contents into the accumulator acc
+// which will hold all paths found.
+func traverseTree(root *Node, nodePath *NodeList, acc *[]grid.Path) {
 	if nodePath == nil {
-		nodePath = &NodeList{Nodes: make([]*node, 0)}
+		nodePath = &NodeList{Nodes: make([]*Node, 0)}
 	}
 	nodePath.Nodes = append(nodePath.Nodes, root)
 

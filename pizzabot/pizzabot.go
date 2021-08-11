@@ -6,43 +6,75 @@ import (
 	"example.com/slice/pizzabot/grid"
 	"fmt"
 	"io"
+	"log"
 	"os"
+	"sort"
 	"time"
 )
 
-func WriteVerboseOutput(w io.Writer, results map[int][]*grid.Path, duration time.Duration) {
-	WriteBasicOutput(w, results)
-
-	//todo write all paths
-	//todo write duration taken
-}
-
-func WriteBasicOutput(w io.Writer, results map[int][]*grid.Path) {
-	for n, paths := range results {
-		fmt.Fprintf(w, "Results with %d moves:\n", n)
-		for _, p := range paths {
-			fmt.Fprintf(w, "%s\n", p.StringifyPath())
-		}
-	}
-}
-
 // BotRunner this is the main harness for the PizzaBot
-func BotRunner(config cli.Config, path *grid.Path) {
+func BotRunner(config cli.Config, path grid.Path) {
+	pathFindingAlgorithm, ok := algorithms.Algorithms[config.Algorithm]
 
-	algorithm := algorithms.Algorithms[config.Algorithm]
+	if !ok {
+		log.Fatalf("Algorithm %s not found!", config.Algorithm)
+	}
 
 	t := time.Now()
-	paths := algorithm(path)
+	paths := pathFindingAlgorithm(path)
 	duration := time.Since(t)
 
-	results := make(map[int][]*grid.Path, 0)
-	for _, p := range paths {
-		results[len(p.Points)] = append(results[len(p.Points)], p)
-	}
+	results := createPathResultsMap(paths)
 
 	if config.Verbose {
 		WriteVerboseOutput(os.Stdout, results, duration)
 	} else {
 		WriteBasicOutput(os.Stdout, results)
 	}
+}
+
+// createPathResultsMap creates a map of Paths keyed by their total distance
+func createPathResultsMap(paths []grid.Path) map[int][]grid.Path {
+	results := make(map[int][]grid.Path, 0)
+	for _, p := range paths {
+		results[p.Distance()] = append(results[p.Distance()], p)
+	}
+
+	return results
+}
+
+// WriteVerboseOutput out put all paths found and time taken to calculate them
+func WriteVerboseOutput(w io.Writer, results map[int][]grid.Path, duration time.Duration) {
+
+	fmt.Fprint(w, "Basic path output:\n")
+	WriteBasicOutput(w, results)
+
+	lengths := make([]int, 0, len(results))
+	for k := range results {
+		lengths = append(lengths, k)
+
+	}
+	sort.Ints(lengths)
+
+	for _, i := range lengths {
+		fmt.Fprintf(w, "\n\nPaths with %d steps:\n", i)
+		for _, j := range results[i] {
+			fmt.Fprintf(w, "%s\n", j)
+			fmt.Fprintf(w, "%s\n", j.StringifyPath())
+		}
+	}
+
+	fmt.Fprintf(w, "\n\nRun took %dms", duration.Milliseconds())
+}
+
+// WriteBasicOutput output a single line representing the result path
+func WriteBasicOutput(w io.Writer, results map[int][]grid.Path) {
+	lengths := make([]int, 0, len(results))
+	for k := range results {
+		lengths = append(lengths, k)
+
+	}
+	sort.Ints(lengths)
+
+	fmt.Fprint(w, results[lengths[0]][0].StringifyPath())
 }
