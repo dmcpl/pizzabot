@@ -1,6 +1,7 @@
 package grid
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -67,7 +68,6 @@ func TestRemovePath(t *testing.T) {
 }
 
 func TestStringifyPathTo(t *testing.T) {
-	t.Fail() //todo add more cases
 	a := Point{0, 0}
 	b := Point{1, 3}
 	output := a.StringifyPathTo(b)
@@ -79,10 +79,15 @@ func TestStringifyPathTo(t *testing.T) {
 	output = a.StringifyPathTo(b)
 
 	assert.Equal(t, "EESS", output)
+
+	a = Point{5, 4}
+	b = Point{1, 0}
+	output = a.StringifyPathTo(b)
+
+	assert.Equal(t, "WWWWSSSS", output)
 }
 
 func TestStringifyPath(t *testing.T) {
-	t.Fail() //todo add more cases
 	path := NewPath(Point{0, 0},
 		Point{1, 3},
 		Point{4, 4},
@@ -94,4 +99,84 @@ func TestStringifyPath(t *testing.T) {
 		Point{4, 1})
 
 	assert.Equal(t, "ENNNDEEENDSSDDWWWWSDEEENDWNDEESSD", path.StringifyPath())
+
+	path = NewPath(Point{5, 0},
+		Point{2, 3},
+		Point{4, 4},
+		Point{5, 2},
+		Point{4, 2},
+		Point{0, 1},
+		Point{1, 2},
+		Point{5, 3},
+		Point{4, 4})
+
+	assert.Equal(t, "WWWNNNDEENDESSDWDWWWWSDENDEEEENDWND", path.StringifyPath())
+}
+
+func TestPathDistance(t *testing.T) {
+	path := NewPath(Point{0, 0},
+		Point{1, 3},
+		Point{4, 4},
+		Point{4, 2},
+		Point{4, 2},
+		Point{0, 1},
+		Point{3, 2},
+		Point{2, 3},
+		Point{4, 1})
+
+	assert.Equal(t, 25,path.Distance())
+
+	path = NewPath(Point{5, 0},
+		Point{2, 3},
+		Point{4, 4},
+		Point{5, 2},
+		Point{4, 2},
+		Point{0, 1},
+		Point{1, 2},
+		Point{5, 3},
+		Point{4, 4})
+
+	assert.Equal(t, 27,path.Distance())
+}
+
+func TestPrintFormatting(t *testing.T) {
+	path := NewPath(Point{0, 0},
+		Point{1, 3},
+		Point{4, 4},
+		Point{4, 2},
+		Point{4, 2},
+		Point{0, 1},
+		Point{3, 2},
+		Point{2, 3},
+		Point{4, 1})
+
+	assert.Equal(t, "[(0, 0) (1, 3) (4, 4) (4, 2) (4, 2) (0, 1) (3, 2) (2, 3) (4, 1)]", fmt.Sprintf("%v", path))
+
+	path = NewPath(Point{5, 0},
+		Point{2, 3},
+		Point{4, 4},
+		Point{5, 2},
+		Point{4, 2},
+		Point{0, 1},
+		Point{1, 2},
+		Point{5, 3},
+		Point{4, 4})
+
+	assert.Equal(t, "[(5, 0) (2, 3) (4, 4) (5, 2) (4, 2) (0, 1) (1, 2) (5, 3) (4, 4)]", fmt.Sprintf("%v", path))
+}
+
+func TestPointOutSideRangeOf(t *testing.T) {
+	grid := Size{5, 5}
+
+	point := Point{0, 0}
+	assert.False(t, point.OutSideRangeOf(grid))
+
+	point = Point{6, 1}
+	assert.True(t, point.OutSideRangeOf(grid))
+
+	point = Point{1, 6}
+	assert.True(t, point.OutSideRangeOf(grid))
+
+	point = Point{5, 5}
+	assert.False(t, point.OutSideRangeOf(grid))
 }

@@ -56,7 +56,7 @@ func parsePath(argument string) (path grid.Path, err error) {
 	points := make([]grid.Point, 0)
 	rawPoints := matcher.FindAllString(argument, -1)
 	for _, rawPoint := range rawPoints {
-		numbersOnly := strings.NewReplacer("(", " ", ")", " ", ",", " ").Replace(rawPoint) // replace the 'X' with whitespace
+		numbersOnly := strings.NewReplacer("(", " ", ")", " ", ",", " ").Replace(rawPoint) // replace  ')' '(' and ',' with whitespace
 		fields := strings.Fields(numbersOnly)
 
 		if len(fields) != 2 {

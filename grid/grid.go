@@ -2,7 +2,6 @@ package grid
 
 import (
 	"fmt"
-	"log"
 	"strings"
 )
 
@@ -91,11 +90,10 @@ func Remove(p Path, pt Point) Path {
 		}
 	}
 
+	// Integrity of the original path is important, so make a copy to ensure that it
+	// is never overwritten by any of the sub-slices accessing its data below.
 	cp := make([]Point, len(p.Points))
-	copied := copy(cp, p.Points) //todo check for written
-	if copied != len(p.Points) {
-		log.Fatalf("FUCK")
-	}
+	copy(cp, p.Points)
 
 	if found {
 		switch {

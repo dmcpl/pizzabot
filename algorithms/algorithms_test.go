@@ -2,7 +2,6 @@ package algorithms
 
 import (
 	"example.com/slice/pizzabot/grid"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -28,7 +27,7 @@ func TestUserOrdered(t *testing.T) {
 func TestEmptyOrdered(t *testing.T) {
 	path := grid.NewPath()
 	paths := UserOrdered(path)
-	expectedPath := grid.NewPath(grid.Point{0,0})
+	expectedPath := grid.NewPath(grid.Point{0, 0})
 
 	var expectedPaths []grid.Path
 	expectedPaths = append(expectedPaths, expectedPath)
@@ -86,12 +85,21 @@ func TestBuildCPTreeLinear(t *testing.T) {
 	acc := make([]grid.Path, 0)
 	traverseTree(node, nil, &acc)
 
-	assert.Equal(t, path, grid.NewPath(acc[0].Points[1:]...))
+	assert.Len(t, acc, 1)
 
-	fmt.Println(path)
-	fmt.Println(grid.NewPath(acc[0].Points[1:]...))
+	expected := grid.NewPath(grid.Point{0, 0},
+		grid.Point{0, 0},
+		grid.Point{0, 1},
+		grid.Point{0, 1},
+		grid.Point{1, 3},
+		grid.Point{2, 3},
+		grid.Point{3, 2},
+		grid.Point{4, 2},
+		grid.Point{4, 2},
+		grid.Point{4, 1},
+		grid.Point{4, 4})
 
-	//todo check acc for correct paths
+	assert.Equal(t, expected, acc[0])
 }
 
 func TestBuildCPTreeTwoPaths(t *testing.T) {
@@ -109,11 +117,7 @@ func TestBuildCPTreeTwoPaths(t *testing.T) {
 	acc := make([]grid.Path, 0)
 	traverseTree(node, nil, &acc)
 
-	for _, path := range acc {
-		fmt.Println(path)
-	}
-
-	//todo check acc for correct paths
+	assert.Len(t, acc, 2)
 }
 
 func TestBuildCPTreeMultiPaths(t *testing.T) {
@@ -136,11 +140,7 @@ func TestBuildCPTreeMultiPaths(t *testing.T) {
 	acc := make([]grid.Path, 0)
 	traverseTree(node, nil, &acc)
 
-	for _, path := range acc {
-		fmt.Println(path)
-	}
-
-	//todo check acc for correct paths
+	assert.Len(t, acc, 5)
 }
 
 func TestBuildBFTree(t *testing.T) {
@@ -150,7 +150,7 @@ func TestBuildBFTree(t *testing.T) {
 		grid.Point{2, 1},
 		grid.Point{2, 1},
 		grid.Point{1, 4},
-	grid.Point{5, 5})
+		grid.Point{5, 5})
 
 	node := buildTree(origin, path, findAllPoints)
 	assert.NotNil(t, node)
@@ -158,16 +158,10 @@ func TestBuildBFTree(t *testing.T) {
 	acc := make([]grid.Path, 0)
 	traverseTree(node, nil, &acc)
 
-	for _, path := range acc {
-		fmt.Println(path)
-	}
-
-	assert.Equal(t, 120, len(acc))
-
-	//todo check acc for correct paths
+	assert.Equal(t, 720, len(acc))
 }
 
 func TestAvailableAlgorithms(t *testing.T) {
-
-	t.Fail()
+	available := AvailableAlgorithms()
+	assert.Len(t, available, 4)
 }

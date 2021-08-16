@@ -1,5 +1,86 @@
 # Slice Code Challenge
 
+- [Building and running](#Building-and-running)
+- [Parameters](#Parameters)
+- [Optional arguments](#Optional-arguments)
+- [Future Improvements](#Future-improvements)
+- [Problem Introduction](#Introduction)
+
+
+## Building and running
+
+From the current directory you can build an executable in the bin/ directory then
+run the program execute the following commands:
+
+`go build -o bin/pizzabot main.go` then `bin/pizzabot <params>`
+
+You may also run the program directly without producing an executable using the
+following:
+
+`go run main.go <params>`
+
+### Parameters
+
+The main game arguments are comprised of a grid size and coordinates of the path
+the bot should take around the grid.
+
+Example:
+`"5x5 (1, 3) (4, 4) (1, 1) (2, 1) ..."`
+
+In an effort to make this a bit  more user-friendly I pattern match on the whole
+line for grid size, accepting the first occurrence ignoring others. I do the same
+for each of the path points specified. I ignore whitespace between and around the
+parameters. Anything not recognised is disregarded.
+
+Note: this argument should be surrounded by double quotes and should appear last
+on the line of command line arguments.
+
+### Optional arguments
+
+`-v`
+The default output of the Pizzabot program is a single line of directions and drops
+as specified in the challenge. I also included a _verbose_ output mode that would
+show the time taken to figure out the path(s), and display all paths attempted
+depending on which _algorithm_ (see below) was used.
+
+`-a [algorithm]`
+You can specify the type of pathfinding _algorithm_ the Pizzabot will use to traverse the points
+specified. 'algorithm' is one of the following:
+
+- `CP` **(Closest Point)**:
+This is the default pathfinding algorithm. The next point chosen by the bot will be 
+the closest in steps, if there are points equally distant, the first in the list will
+be chosen.
+
+- `ordered` **(Ordered)**:
+The points are traversed in the order that the user specifies on the command line. This
+differs from other algorithms in that it will travel away from and back to a point
+that is specified twice or more rather than making two drops there.
+
+- `treeCP` **(Node Tree Closest Point)**:
+This algorithm operates similarly to the Closest Point, the main difference is that when
+two subsequent point options are equidistant from the current point both paths are stored
+and followed. This is achieved by storing path points in Nodes of a decision tree. The default
+output will just display the first of the shortest routes, the verbose output will show every
+route attempted.
+
+- `treeBF` **(Node Tree Brute Force)**:
+Every single combination of remaining path point will be attempted. For example if the path has
+seven points, all seven points will be attempted first, then from each of those points the remaining
+six and so on. If n was the number of points then n! (factorial) paths will be produced. This can
+get out of hand fairly quickly and produces some interesting benchmark times with verbose output.
+You will be probably be best piping this output to file.
+
+Example line:
+`bin/pizzabot -v -a treeBF "5x5 (1, 3) (4, 4) (1, 1) (2, 1)"`
+
+
+### Future improvements
+- Specifiable origin point
+- I/O from file sources
+- Show which parts of the command line were unparsed, show currently parsable parameters and ask
+for permission to continue.
+
 ## Introduction
 
 As part of Slice's commitment to reducing bias in the interview process, we're
@@ -92,3 +173,4 @@ To complete the challenge, please solve for the following _exact input_:
 ```
 
 Keep it simple, and have fun!
+

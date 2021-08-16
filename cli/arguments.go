@@ -14,10 +14,7 @@ type Config struct {
 
 // ReadCommandLineArgs read in command line switches and bot run parameters
 func ReadCommandLineArgs() (config Config, botParams string, err error) {
-	flag.BoolVar(&config.Verbose, "-verbose", false, "Verbose output (include all paths attempted). Default off.")
 	flag.BoolVar(&config.Verbose, "v", false, "Verbose output (include all paths attempted). Default off.")
-
-	flag.StringVar(&config.Algorithm, "-algorithm", "CP", fmt.Sprintf("Which algorithm to chose from one of: [%s]", strings.Join(algorithms.AvailableAlgorithms(), ", ")))
 	flag.StringVar(&config.Algorithm, "a", "CP", fmt.Sprintf("Which algorithm to chose from one of: [%s]", strings.Join(algorithms.AvailableAlgorithms(), ", ")))
 
 	flag.Parse()
