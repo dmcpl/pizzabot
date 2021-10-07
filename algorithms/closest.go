@@ -1,7 +1,7 @@
 package algorithms
 
 import (
-	"example.com/slice/pizzabot/grid"
+	"github.com/dmcpl/pizzabot/grid"
 )
 
 // ClosestPoint will calculate the path around the grid finding the first closest point to the current point and

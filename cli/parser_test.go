@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"example.com/slice/pizzabot/grid"
+	"github.com/dmcpl/pizzabot/grid"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

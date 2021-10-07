@@ -1,8 +1,8 @@
 package main
 
 import (
-	"example.com/slice/pizzabot/cli"
-	"example.com/slice/pizzabot/pizzabot"
+	"github.com/dmcpl/pizzabot/cli"
+	"github.com/dmcpl/pizzabot/pizzabot"
 	"log"
 )
 

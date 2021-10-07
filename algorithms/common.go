@@ -1,7 +1,7 @@
 package algorithms
 
 import (
-	"example.com/slice/pizzabot/grid"
+	"github.com/dmcpl/pizzabot/grid"
 )
 
 type AlgorithmFunc func(grid.Path) []grid.Path

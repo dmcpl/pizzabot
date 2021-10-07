@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"example.com/slice/pizzabot/algorithms"
+	"github.com/dmcpl/pizzabot/algorithms"
 	"flag"
 	"fmt"
 	"strings"

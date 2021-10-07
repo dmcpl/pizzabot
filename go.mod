@@ -1,4 +1,4 @@
-module example.com/slice/pizzabot
+module github.com/dmcpl/pizzabot
 
 go 1.16
 

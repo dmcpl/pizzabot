@@ -1,7 +1,7 @@
 package algorithms
 
 import (
-	"example.com/slice/pizzabot/grid"
+	"github.com/dmcpl/pizzabot/grid"
 )
 
 type PathFinderFunc func(point grid.Point, rest grid.Path) grid.Path

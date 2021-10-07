@@ -1,7 +1,7 @@
 package algorithms
 
 import (
-	"example.com/slice/pizzabot/grid"
+	"github.com/dmcpl/pizzabot/grid"
 )
 
 // UserOrdered just returns the path which the user has specified in the parameters prepended by the origin point.

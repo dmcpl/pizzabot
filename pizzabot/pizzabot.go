@@ -1,9 +1,9 @@
 package pizzabot
 
 import (
-	"example.com/slice/pizzabot/algorithms"
-	"example.com/slice/pizzabot/cli"
-	"example.com/slice/pizzabot/grid"
+	"github.com/dmcpl/pizzabot/algorithms"
+	"github.com/dmcpl/pizzabot/cli"
+	"github.com/dmcpl/pizzabot/grid"
 	"fmt"
 	"io"
 	"log"
